@@ -1,0 +1,16 @@
+[package]
+name = "fsm_rs"
+version = "0.1.0"
+authors = ["Rincewound <aaaargh@minddebugger.com>"]
+edition = "2018"
+license = "BSD"
+description = "A small library for creating statemachines"
+homepage = "https://github.com/rincewound/fsm_rs"
+repository = "https://github.com/rincewound/fsm_rs"
+documentaation = "https://github.com/rincewound/fsm_rs"
+readme = "Readme.md"
+keywords = ["Data structures"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
