@@ -3,7 +3,7 @@ pub struct Transition <T: PartialEq, EvtT: PartialEq+Copy, ManagedType: Sized>
     from:   T,
     to:     T,
     event:  EvtT,
-    tFunc: Option<Box<dyn FnMut(EvtT, &mut ManagedType) ->()>>
+    t_func: Option<Box<dyn FnMut(EvtT, &mut ManagedType) ->()>>
 }
 
 impl <'a, T: PartialEq, EvtT: PartialEq+Copy, ManagedType: Sized > Transition<T, EvtT, ManagedType>
@@ -15,7 +15,7 @@ impl <'a, T: PartialEq, EvtT: PartialEq+Copy, ManagedType: Sized > Transition<T,
             from: from_state,
             to: to_state,
             event: trigger, 
-            tFunc: None
+            t_func: None
         }
     }
 
@@ -26,7 +26,7 @@ impl <'a, T: PartialEq, EvtT: PartialEq+Copy, ManagedType: Sized > Transition<T,
             from: from_state,
             to: to_state,
             event: trigger, 
-            tFunc: Some(trigger_func)
+            t_func: Some(trigger_func)
         }
     }
 }
@@ -49,12 +49,12 @@ impl<StateType: PartialEq  + Copy, EventType: PartialEq+Copy, ManagedType> Finit
         }
     }
 
-    pub fn trigger_event(&mut self, E: EventType)
+    pub fn trigger_event(&mut self, e: EventType)
     {
         // check if a transition exists in the current state, that
         // matches the event:        
         let items: Vec<&Transition<StateType, EventType, ManagedType>> = self.transitions.iter().filter(|transition| transition.from == self.current_state 
-                                                                                                     && std::mem::discriminant(&transition.event) == std::mem::discriminant(&E)).collect();                                                                                        
+                                                                                                     && std::mem::discriminant(&transition.event) == std::mem::discriminant(&e)).collect();                                                                                        
         if items.len() == 0
         {
             panic!("Bad trigger in current state!");
@@ -67,12 +67,12 @@ impl<StateType: PartialEq  + Copy, EventType: PartialEq+Copy, ManagedType> Finit
 
         let state_to_find = self.current_state;
         let actual_transition = self.transitions.iter_mut().filter(|transition| transition.from == state_to_find
-                                && std::mem::discriminant(&transition.event) == std::mem::discriminant(&E)).next().unwrap();
+                                && std::mem::discriminant(&transition.event) == std::mem::discriminant(&e)).next().unwrap();
         self.current_state = actual_transition.to;
 
-        if let Some(func) = &mut actual_transition.tFunc
+        if let Some(func) = &mut actual_transition.t_func
         {
-            func(E, &mut self.managed_state);
+            func(e, &mut self.managed_state);
         }
         
     }
